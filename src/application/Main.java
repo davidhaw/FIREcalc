@@ -29,6 +29,7 @@ import javafx.scene.text.Text;
  
 public class Main extends Application {
 	Boolean advancedSelection;
+	Boolean databaseSelection = false;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -51,12 +52,12 @@ public class Main extends Application {
 
 			Label ageLabel = new Label("Age:");
 			setupGrid.add(ageLabel, 0, 1);
-			TextField ageField = new TextField();
+			TextField ageField = new TextField("0");
 			setupGrid.add(ageField, 1, 1);
 			
 			Label ageStartLabel = new Label("Age To Start FIRE:");
 			setupGrid.add(ageStartLabel, 0, 2);
-			TextField ageStartField = new TextField();
+			TextField ageStartField = new TextField("40");
 			setupGrid.add(ageStartField, 1, 2);
 
 			Label preSave = new Label("How much have you already saved for FIRE?:");
@@ -107,10 +108,6 @@ public class Main extends Application {
 			
 			Text saveYearlyT = new Text();
 			dataGrid.add(saveYearlyT, 0, 2);
-
-			//TODO finish line chart showing all the data
-
-			
 			
 			Scene dataScene = new Scene(dataGrid, 720, 480);
 			
@@ -144,21 +141,16 @@ public class Main extends Application {
 				
 				public void handle(ActionEvent event)
 				{
-					
 					if (event.getSource() instanceof CheckBox) {
-						
 						CheckBox saveMode = (CheckBox) event.getSource();
-			            boolean databaseSelection = saveMode.isSelected();
+			            databaseSelection = saveMode.isSelected();
 			            System.out.println(databaseSelection);
-						
-						
-					}
-					
+					}					
 				}
 			};
 			
 			advancedMode.setOnAction(advancedModeEvent);
-
+			saveMode.setOnAction(saveEvent);
 
 			
 			infoBtn.setOnAction(new EventHandler<ActionEvent>() { 
@@ -171,9 +163,9 @@ public class Main extends Application {
 			        Calculator calc = new Calculator();
 			        
 			        int deathAge = 80;
-			        int age = Integer.parseInt(ageField.getText());
-			        
-			        deathAge = Integer.parseInt(deathAgeF.getText());
+				    int age = Integer.parseInt(ageField.getText());
+				    deathAge = Integer.parseInt(deathAgeF.getText());
+
 			        
 			        double preSaved = Double.parseDouble(preSaveField.getText());
 			        
@@ -189,25 +181,42 @@ public class Main extends Application {
 					FIREcash.setName("Cash spending for FIRE"); 
 
 					int i = age;
-					int x = 0;
+					int x =0;
 					while (i <= deathAge) {
-						FIREcash.getData().add(new XYChart.Data(x, chartData.get(x))); 
+						FIREcash.getData().add(new XYChart.Data(i, chartData.get(x))); 
 						//System.out.println(chartData.get(x));
 						i++;
 						x++;
 					}
+					
 					//Defining X axis  
-					NumberAxis xAxis = new NumberAxis(0, deathAge, 1); 
+					NumberAxis xAxis = new NumberAxis(age, deathAge, 1); 
 					xAxis.setLabel("Age"); 
 					        
+					//amntNeededTop just makes the graph a little bit higher than the mac cash so it is easier to read
+					double amntNeededTop = amntNeeded + 500;
+					
 					//Defining y axis 
-					NumberAxis yAxis = new NumberAxis(preSaved, amntNeeded, 50); 
+					NumberAxis yAxis = new NumberAxis(0, amntNeededTop, 50); 
 					yAxis.setLabel("FIRE Cash");
 					
 					LineChart linechart = new LineChart(xAxis, yAxis);
 					linechart.getData().add(FIREcash);
 					dataGrid.add(linechart, 0, 4);
-
+					
+					//TODO make database saving concurrent because this is not a ui frontend thing, this can just easily run in the background becasue the user won't have any immediate effect from it
+					if (databaseSelection == true) {
+						
+						DBuser db = new DBuser();
+						
+						//TODO change db and dbuser from earnings to just general info like amntNeeded
+						//DefaultE is just a placeholder because there is now way to name earnings or have multiple earnings, yet
+						db.insertEarnings(amntNeeded, saveYearly);
+						
+					} else {
+						
+						
+					}
 					
 			        primaryStage.setScene(dataScene);
 			        dataAmntNeedT.setText("Amount Needed to FIRE: $" + amntNeeded);

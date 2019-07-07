@@ -9,7 +9,7 @@ public class DBuser {
 
     private Connection connect() {
     	
-   	 String url = "jdbc:sqlite:infodb.db";  
+   	 String url = "jdbc:sqlite:src/application/infodb.db";  
         Connection conn = null;  
         
         try {  
@@ -25,22 +25,18 @@ public class DBuser {
         
    }
     
-    public void insertEarnings(String name, double yearly, double tax) {  
-        String sql = "INSERT INTO earnings(name, yearly, tax) VALUES(?,?,?)";  
+    public void insertEarnings(double amntNeeded, double saveYearly) {
+        String sql = "INSERT INTO earning(amntNeeded, saveYearly) VALUES(?,?)";  
    
-        try{  
-        	
+        try{ 
             Connection conn = this.connect();  
             PreparedStatement setStatement = conn.prepareStatement(sql);  
-            setStatement.setString(1, name);  
-            setStatement.setDouble(2, yearly);  
-            setStatement.setDouble(3, tax);  
+            setStatement.setDouble(1, amntNeeded);  
+            setStatement.setDouble(2, saveYearly);  
             setStatement.executeUpdate();  
-       
+            conn.close();
         } catch (SQLException e) {  
-        
         	System.out.println(e.getMessage());  
-        
         }  
     }  
 	
