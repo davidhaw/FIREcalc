@@ -3,10 +3,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;  
-
+	
 public class WorkingDB {
 
     private Connection connect() {
+    	
     	
     	 String url = "jdbc:sqlite:infodb.db";  
          Connection conn = null;  
@@ -38,11 +39,11 @@ public class WorkingDB {
     /**
      * @param args the command line arguments
      */
-   /* public static void main(String[] args) {
+ /*  public static void main(String[] args) {
         WorkingDB app = new WorkingDB();  
         // insert three new rows  
         String Ename = "Job";
         app.insert(Ename, 300000000, 0.15);  
     } 
-    */
+   */ 
 }

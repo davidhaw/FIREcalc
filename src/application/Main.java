@@ -85,7 +85,6 @@ public class Main extends Application {
 			hbBtn.getChildren().add(infoBtn);
 			setupGrid.add(hbBtn, 1, 8);
 			
-			//Saving DB
 			//TODO finish saving DB
 			final CheckBox saveMode = new CheckBox("Save Info For Further Use");
 			setupGrid.add(saveMode, 0, 9);
@@ -139,6 +138,25 @@ public class Main extends Application {
 			        }
 			    }
 			};
+			
+			//Save to Database action event
+			EventHandler<ActionEvent> saveEvent = new EventHandler<ActionEvent> () {
+				
+				public void handle(ActionEvent event)
+				{
+					
+					if (event.getSource() instanceof CheckBox) {
+						
+						CheckBox saveMode = (CheckBox) event.getSource();
+			            boolean databaseSelection = saveMode.isSelected();
+			            System.out.println(databaseSelection);
+						
+						
+					}
+					
+				}
+			};
+			
 			advancedMode.setOnAction(advancedModeEvent);
 
 
@@ -156,7 +174,10 @@ public class Main extends Application {
 			        int age = Integer.parseInt(ageField.getText());
 			        
 			        deathAge = Integer.parseInt(deathAgeF.getText());
-			        Double amntNeeded = calc.amntNeeded(Double.parseDouble(preSaveField.getText()), Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
+			        
+			        double preSaved = Double.parseDouble(preSaveField.getText());
+			        
+			        Double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
 			        Double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
 			        
@@ -169,7 +190,7 @@ public class Main extends Application {
 
 					int i = age;
 					int x = 0;
-					while (i < deathAge) {
+					while (i <= deathAge) {
 						FIREcash.getData().add(new XYChart.Data(x, chartData.get(x))); 
 						//System.out.println(chartData.get(x));
 						i++;
@@ -180,7 +201,7 @@ public class Main extends Application {
 					xAxis.setLabel("Age"); 
 					        
 					//Defining y axis 
-					NumberAxis yAxis = new NumberAxis(0, amntNeeded, 50); 
+					NumberAxis yAxis = new NumberAxis(preSaved, amntNeeded, 50); 
 					yAxis.setLabel("FIRE Cash");
 					
 					LineChart linechart = new LineChart(xAxis, yAxis);

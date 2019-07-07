@@ -48,7 +48,6 @@ public class Calculator {
 				
 				lastCash = lastCash - usedYearly;
 				cash.add(lastCash);
-				System.out.println(i);
 				i++;
 				//System.out.println("Removed" + lastCash);
 			}
