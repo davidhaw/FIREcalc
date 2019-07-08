@@ -46,7 +46,7 @@ public class Main extends Application {
 			
 			//Advanced Mode
 			final CheckBox advancedMode = new CheckBox("Advanced Mode");
-			setupGrid.add(advancedMode, 0, 10);
+			setupGrid.add(advancedMode, 1, 10);
 			
 			scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 			setupGrid.add(scenetitle, 0, 0, 2, 1);
@@ -87,11 +87,13 @@ public class Main extends Application {
 			hbBtn.getChildren().add(infoBtn);
 			setupGrid.add(hbBtn, 1, 8);
 			
-			//TODO finish saving DB
-			final CheckBox saveMode = new CheckBox("Save Info For Further Use");
-			setupGrid.add(saveMode, 1, 10);
+			Button loadDBBtn = new Button("Load Data"); 
+			setupGrid.add(loadDBBtn, 0, 8);
 			
-			//TODO finish Data showing scene
+			final CheckBox saveMode = new CheckBox("Save Info For Further Use");
+			setupGrid.add(saveMode, 0, 10);
+			
+			
 			GridPane dataGrid = new GridPane();
 			dataGrid.setAlignment(Pos.CENTER);
 			dataGrid.setHgap(10);
@@ -105,11 +107,15 @@ public class Main extends Application {
 			
 			Text dataAmntNeedT = new Text();
 			dataGrid.add(dataAmntNeedT, 0, 1);
-			
-			
+		
 			Text saveYearlyT = new Text();
 			dataGrid.add(saveYearlyT, 0, 2);
+		
+			Button backStart = new Button("Go Back To Data Input");
+			dataGrid.add(backStart, 0, 3);
 			
+			
+			Scene setupScene = new Scene(setupGrid, 720, 480);
 			Scene dataScene = new Scene(dataGrid, 720, 480);
 			
 			
@@ -150,9 +156,36 @@ public class Main extends Application {
 				}
 			};
 			
+			//Load to Database action event
+			EventHandler<ActionEvent> loadDB = new EventHandler<ActionEvent> () {
+				
+				public void handle(ActionEvent event)
+				{
+					
+					DBuser dbLoad = new DBuser();
+					ArrayList<Object> dbEarnings = new ArrayList<>();
+					dbEarnings = dbLoad.getEarnings();
+					primaryStage.setScene(dataScene);
+			        dataAmntNeedT.setText("Amount Needed to FIRE: $" + dbEarnings.get(1));
+			        saveYearlyT.setText("Amount needed to save yearly to FIRE: $" + dbEarnings.get(0));
+			        
+					
+				}
+			};
+			
+			//Go back to data input
+			EventHandler<ActionEvent> goBack = new EventHandler<ActionEvent> () {
+				
+				public void handle(ActionEvent event)
+				{
+					primaryStage.setScene(setupScene);			
+				}
+			};
+			
 			advancedMode.setOnAction(advancedModeEvent);
 			saveMode.setOnAction(saveEvent);
-
+			loadDBBtn.setOnAction(loadDB);
+			backStart.setOnAction(goBack);
 			
 			infoBtn.setOnAction(new EventHandler<ActionEvent>() { 
 			    @SuppressWarnings("unchecked")
@@ -173,10 +206,6 @@ public class Main extends Application {
 			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
 			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
-			        
-			        //System.out.println(amntNeeded);
-			        //System.out.println(saveYearly);
-			        //System.out.println(chartData);
 			        
 					XYChart.Series FIREcash = new XYChart.Series(); 
 					FIREcash.setName("Cash spending for FIRE"); 
@@ -205,7 +234,7 @@ public class Main extends Application {
 					linechart.getData().add(FIREcash);
 					dataGrid.add(linechart, 0, 4);
 					
-					dbThread r = new dbThread(amntNeeded, saveYearly, databaseSelection);
+					dbThreadSave r = new dbThreadSave(amntNeeded, saveYearly, databaseSelection);
 			        Thread thread_object=new Thread(r);
 			        thread_object.start();
 					
@@ -218,7 +247,6 @@ public class Main extends Application {
 			});
 			
 			
-			Scene setupScene = new Scene(setupGrid, 720, 480);
 			
 			//TODO finish CSS
 			setupScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -238,32 +266,4 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-}
-
-class dbThread implements Runnable {
-	
-	double amntNeeded;
-	double saveYearly;
-	boolean databaseSelection;
-	
-    public dbThread(double amntNeeded, double saveYearly, boolean databaseSelection) {
-		this.amntNeeded = amntNeeded;
-		this.saveYearly = saveYearly;
-		this.databaseSelection = databaseSelection;
-		System.out.println("amnt " + this.amntNeeded);
-	}
-     public void run() {
-    	//TODO make database saving concurrent because this is not a ui frontend thing, this can just easily run in the background becasue the user won't have any immediate effect from it
- 		if (databaseSelection == true) {
- 			
- 			DBuser db = new DBuser();	
- 			db.insertEarnings(amntNeeded, saveYearly);
- 			System.out.println("Saved");
- 			
- 		} else {	
- 			System.out.println("Didn't save");
- 			System.out.println(databaseSelection);
- 			
- 		}
-     }
 }

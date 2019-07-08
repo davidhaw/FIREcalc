@@ -3,7 +3,10 @@ package application;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;  
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;  
 
 public class DBuser {
 
@@ -38,6 +41,38 @@ public class DBuser {
         } catch (SQLException e) {  
         	System.out.println(e.getMessage());  
         }  
-    }  
+    }
+    
+    @SuppressWarnings("rawtypes")
+	public ArrayList getEarnings ()
+    {
+    	ArrayList<Object> dbAllInfo = new ArrayList<>();
+    	//DB last info will have the last to things from dbAll info, which will be the amntNeeded and saveYearly from the last db save. This will prevent us having to delete old data which the user might want back
+    	ArrayList<Object> dbLastInfo = new ArrayList<>();
+    	
+    	String getSql = "SELECT amntNeeded, saveYearly FROM earning";
+    	int placement = 0;
+    	
+    	try (Connection conn = this.connect();
+    			Statement stmt = conn.createStatement();
+    			ResultSet rs = stmt.executeQuery(getSql)){
+    		while (rs.next()) {
+    			
+    			dbAllInfo.add(rs.getDouble("amntNeeded"));
+    			dbAllInfo.add(rs.getDouble("saveYearly"));
+    			placement++;
+    		}
+    		
+    	} catch (SQLException e) {
+    		System.out.println(e.getMessage());
+    	}
+    	
+    	placement++;
+    	dbLastInfo.add(dbAllInfo.get(placement));
+    	placement++;
+    	dbLastInfo.add(dbAllInfo.get(placement));
+    	System.out.println(dbLastInfo);
+    	return dbLastInfo;	
+    }
 	
 }
