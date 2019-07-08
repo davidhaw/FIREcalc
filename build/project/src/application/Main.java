@@ -29,6 +29,8 @@ import javafx.scene.text.Text;
  
 public class Main extends Application {
 	Boolean advancedSelection;
+	Boolean databaseSelection = false;
+	
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -40,23 +42,23 @@ public class Main extends Application {
 			setupGrid.setHgap(10);
 			setupGrid.setVgap(10);
 			setupGrid.setPadding(new Insets(25, 25, 25, 25));
-			Text scenetitle = new Text("Welcome. Please input your data");
+			Text scenetitle = new Text("Welcome. Please input your data to calculate FIRE data");
 			
 			//Advanced Mode
 			final CheckBox advancedMode = new CheckBox("Advanced Mode");
-			setupGrid.add(advancedMode, 0, 10);
+			setupGrid.add(advancedMode, 1, 10);
 			
 			scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 			setupGrid.add(scenetitle, 0, 0, 2, 1);
 
 			Label ageLabel = new Label("Age:");
 			setupGrid.add(ageLabel, 0, 1);
-			TextField ageField = new TextField();
+			TextField ageField = new TextField("0");
 			setupGrid.add(ageField, 1, 1);
 			
 			Label ageStartLabel = new Label("Age To Start FIRE:");
 			setupGrid.add(ageStartLabel, 0, 2);
-			TextField ageStartField = new TextField();
+			TextField ageStartField = new TextField("40");
 			setupGrid.add(ageStartField, 1, 2);
 
 			Label preSave = new Label("How much have you already saved for FIRE?:");
@@ -85,12 +87,13 @@ public class Main extends Application {
 			hbBtn.getChildren().add(infoBtn);
 			setupGrid.add(hbBtn, 1, 8);
 			
-			//Saving DB
-			//TODO finish saving DB
-			final CheckBox saveMode = new CheckBox("Save Info For Further Use");
-			setupGrid.add(saveMode, 0, 9);
+			Button loadDBBtn = new Button("Load Data"); 
+			setupGrid.add(loadDBBtn, 0, 8);
 			
-			//TODO finish Data showing scene
+			final CheckBox saveMode = new CheckBox("Save Info For Further Use");
+			setupGrid.add(saveMode, 0, 10);
+			
+			
 			GridPane dataGrid = new GridPane();
 			dataGrid.setAlignment(Pos.CENTER);
 			dataGrid.setHgap(10);
@@ -104,15 +107,15 @@ public class Main extends Application {
 			
 			Text dataAmntNeedT = new Text();
 			dataGrid.add(dataAmntNeedT, 0, 1);
-			
-			
+		
 			Text saveYearlyT = new Text();
 			dataGrid.add(saveYearlyT, 0, 2);
-
-			//TODO finish line chart showing all the data
-
+		
+			Button backStart = new Button("Go Back To Data Input");
+			dataGrid.add(backStart, 0, 3);
 			
 			
+			Scene setupScene = new Scene(setupGrid, 720, 480);
 			Scene dataScene = new Scene(dataGrid, 720, 480);
 			
 			
@@ -139,9 +142,50 @@ public class Main extends Application {
 			        }
 			    }
 			};
+			
+			//Save to Database action event
+			EventHandler<ActionEvent> saveEvent = new EventHandler<ActionEvent> () {
+				
+				public void handle(ActionEvent event)
+				{
+					if (event.getSource() instanceof CheckBox) {
+						CheckBox saveMode = (CheckBox) event.getSource();
+			            databaseSelection = saveMode.isSelected();
+			            System.out.println(databaseSelection);
+					}					
+				}
+			};
+			
+			//Load to Database action event
+			EventHandler<ActionEvent> loadDB = new EventHandler<ActionEvent> () {
+				
+				public void handle(ActionEvent event)
+				{
+					
+					DBuser dbLoad = new DBuser();
+					ArrayList<Object> dbEarnings = new ArrayList<>();
+					dbEarnings = dbLoad.getEarnings();
+					primaryStage.setScene(dataScene);
+			        dataAmntNeedT.setText("Amount Needed to FIRE: $" + dbEarnings.get(1));
+			        saveYearlyT.setText("Amount needed to save yearly to FIRE: $" + dbEarnings.get(0));
+			        
+					
+				}
+			};
+			
+			//Go back to data input
+			EventHandler<ActionEvent> goBack = new EventHandler<ActionEvent> () {
+				
+				public void handle(ActionEvent event)
+				{
+					primaryStage.setScene(setupScene);			
+				}
+			};
+			
 			advancedMode.setOnAction(advancedModeEvent);
-
-
+			saveMode.setOnAction(saveEvent);
+			loadDBBtn.setOnAction(loadDB);
+			backStart.setOnAction(goBack);
 			
 			infoBtn.setOnAction(new EventHandler<ActionEvent>() { 
 			    @SuppressWarnings("unchecked")
@@ -153,40 +197,46 @@ public class Main extends Application {
 			        Calculator calc = new Calculator();
 			        
 			        int deathAge = 80;
-			        int age = Integer.parseInt(ageField.getText());
+				    int age = Integer.parseInt(ageField.getText());
+				    deathAge = Integer.parseInt(deathAgeF.getText());
+
 			        
-			        deathAge = Integer.parseInt(deathAgeF.getText());
-			        Double amntNeeded = calc.amntNeeded(Double.parseDouble(preSaveField.getText()), Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
-			        Double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
+			        double preSaved = Double.parseDouble(preSaveField.getText());
+			        
+			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
+			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
-			        
-			        //System.out.println(amntNeeded);
-			        //System.out.println(saveYearly);
-			        //System.out.println(chartData);
 			        
 					XYChart.Series FIREcash = new XYChart.Series(); 
 					FIREcash.setName("Cash spending for FIRE"); 
 
 					int i = age;
-					int x = 0;
-					while (i < deathAge) {
-						FIREcash.getData().add(new XYChart.Data(x, chartData.get(x))); 
+					int x =0;
+					while (i <= deathAge) {
+						FIREcash.getData().add(new XYChart.Data(i, chartData.get(x))); 
 						//System.out.println(chartData.get(x));
 						i++;
 						x++;
 					}
+					
 					//Defining X axis  
-					NumberAxis xAxis = new NumberAxis(0, deathAge, 1); 
+					NumberAxis xAxis = new NumberAxis(age, deathAge, 1); 
 					xAxis.setLabel("Age"); 
 					        
+					//amntNeededTop just makes the graph a little bit higher than the mac cash so it is easier to read
+					double amntNeededTop = amntNeeded + 500;
+					
 					//Defining y axis 
-					NumberAxis yAxis = new NumberAxis(0, amntNeeded, 50); 
+					NumberAxis yAxis = new NumberAxis(0, amntNeededTop, 50); 
 					yAxis.setLabel("FIRE Cash");
 					
 					LineChart linechart = new LineChart(xAxis, yAxis);
 					linechart.getData().add(FIREcash);
 					dataGrid.add(linechart, 0, 4);
-
+					
+					dbThreadSave r = new dbThreadSave(amntNeeded, saveYearly, databaseSelection);
+			        Thread thread_object=new Thread(r);
+			        thread_object.start();
 					
 			        primaryStage.setScene(dataScene);
 			        dataAmntNeedT.setText("Amount Needed to FIRE: $" + amntNeeded);
@@ -197,7 +247,7 @@ public class Main extends Application {
 			});
 			
 			
-			Scene setupScene = new Scene(setupGrid, 720, 480);
+			
 			//TODO finish CSS
 			setupScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			dataScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

@@ -109,7 +109,7 @@
 			<fx:resources refid="appRes"/>
 	
 			<manifest>
-				<attribute name="Implementation-Vendor" value=""/>
+				<attribute name="Implementation-Vendor" value="https://github.com/davidhaw/FIREcalc"/>
 				<attribute name="Implementation-Title" value="FIRE Calculator"/>
 				<attribute name="Implementation-Version" value="1"/>
 				<attribute name="JavaFX-Feature-Proxy" value="None"/>
@@ -129,7 +129,7 @@
 			updatemode="background" >
 	
 			<fx:platform basedir="${java.home}"/>
-			<fx:info title="FIREgui" vendor=""/>
+			<fx:info title="FIREgui" vendor="https://github.com/davidhaw/FIREcalc"/>
 	
 			<fx:application refId="fxApplication"/>
 			<fx:resources refid="appRes"/>

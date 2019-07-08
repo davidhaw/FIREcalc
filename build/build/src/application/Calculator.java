@@ -19,18 +19,7 @@ public class Calculator {
 		return result;
 	}
 	
-/*	public double amntNeededAdvanced (int age, double amntNeeded, double saveYearly, double inflation, double interest, int deathAge) {
-		int ageLeft = deathAge - age;
-		int i = 0;
-		int inflatedNum = 0;
-		while (i <= ageLeft) {
-			
-			inflatedNum = (int) (amntNeeded * inflation);
-			i++;
-			
-		}
-		return inflatedNum;
-	} */
+	//TODO add in advanced mode calculations that include inflation and interest
 	
 	@SuppressWarnings("rawtypes")
 	public ArrayList chartdata (int age, int startAge, double saveYearly, double usedYearly, int deathAge) {
@@ -48,7 +37,6 @@ public class Calculator {
 				
 				lastCash = lastCash - usedYearly;
 				cash.add(lastCash);
-				System.out.println(i);
 				i++;
 				//System.out.println("Removed" + lastCash);
 			}

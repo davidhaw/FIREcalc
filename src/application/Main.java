@@ -61,7 +61,7 @@ public class Main extends Application {
 			TextField ageStartField = new TextField("40");
 			setupGrid.add(ageStartField, 1, 2);
 
-			Label preSave = new Label("How much have you already saved for FIRE?:");
+			Label preSave = new Label("How much have you already saved for FIRE:");
 			setupGrid.add(preSave, 0, 3);
 			TextField preSaveField = new TextField();
 			setupGrid.add(preSaveField, 1, 3);
@@ -78,6 +78,13 @@ public class Main extends Application {
 			setupGrid.add(deathAgeF, 1, 5);
 			deathAgeL.setVisible(false);
 			deathAgeF.setVisible(false);
+			
+			Label InterInfL = new Label ("Interest - Inflation Per Year");
+			setupGrid.add(InterInfL, 0, 6);
+			TextField InterInfF = new TextField("0.00");
+			setupGrid.add(InterInfF, 1, 6);
+			InterInfL.setVisible(false);
+			InterInfF.setVisible(false);
 			
 			Button infoBtn = new Button("Show me my data!"); 
 			final Text actiontarget = new Text();
@@ -131,11 +138,16 @@ public class Main extends Application {
 			            	
 			    			deathAgeL.setVisible(true);
 			    			deathAgeF.setVisible(true);
+			    			InterInfL.setVisible(true);
+			    			InterInfF.setVisible(true);
+			    			
 			            	
 			            } else {
 			            	
 			    			deathAgeL.setVisible(false);
 			    			deathAgeF.setVisible(false);
+			    			InterInfL.setVisible(false);
+			    			InterInfF.setVisible(false);
 			            	
 			            }
 			            
@@ -200,7 +212,7 @@ public class Main extends Application {
 				    int age = Integer.parseInt(ageField.getText());
 				    deathAge = Integer.parseInt(deathAgeF.getText());
 
-			        
+			        double interestInflation = Double.parseDouble(InterInfF.getText());
 			        double preSaved = Double.parseDouble(preSaveField.getText());
 			        
 			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);

@@ -19,18 +19,24 @@ public class Calculator {
 		return result;
 	}
 	
-/*	public double amntNeededAdvanced (int age, double amntNeeded, double saveYearly, double inflation, double interest, int deathAge) {
-		int ageLeft = deathAge - age;
+	//TODO Implement the interest inflation method
+	public double amntNeededAdvanced(double saveYearly, int startAge, int deathAge, double interestInflation) {
+		double result = 0.00;
+		int yrsOfFire = deathAge - startAge;
 		int i = 0;
-		int inflatedNum = 0;
-		while (i <= ageLeft) {
-			
-			inflatedNum = (int) (amntNeeded * inflation);
+		double saveYInterest;
+		
+		while (i<yrsOfFire)
+		{
+			saveYInterest = saveYearly * interestInflation;
+			saveYearly = saveYearly - saveYInterest;
 			i++;
 			
 		}
-		return inflatedNum;
-	} */
+		
+		
+		return result;
+	}
 	
 	@SuppressWarnings("rawtypes")
 	public ArrayList chartdata (int age, int startAge, double saveYearly, double usedYearly, int deathAge) {
