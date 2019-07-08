@@ -31,6 +31,7 @@ public class Main extends Application {
 	Boolean advancedSelection;
 	Boolean databaseSelection = false;
 	
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
@@ -41,7 +42,7 @@ public class Main extends Application {
 			setupGrid.setHgap(10);
 			setupGrid.setVgap(10);
 			setupGrid.setPadding(new Insets(25, 25, 25, 25));
-			Text scenetitle = new Text("Welcome. Please input your data");
+			Text scenetitle = new Text("Welcome. Please input your data to calculate FIRE data");
 			
 			//Advanced Mode
 			final CheckBox advancedMode = new CheckBox("Advanced Mode");
@@ -88,7 +89,7 @@ public class Main extends Application {
 			
 			//TODO finish saving DB
 			final CheckBox saveMode = new CheckBox("Save Info For Further Use");
-			setupGrid.add(saveMode, 0, 9);
+			setupGrid.add(saveMode, 1, 10);
 			
 			//TODO finish Data showing scene
 			GridPane dataGrid = new GridPane();
@@ -169,8 +170,8 @@ public class Main extends Application {
 			        
 			        double preSaved = Double.parseDouble(preSaveField.getText());
 			        
-			        Double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
-			        Double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
+			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
+			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
 			        
 			        //System.out.println(amntNeeded);
@@ -204,19 +205,9 @@ public class Main extends Application {
 					linechart.getData().add(FIREcash);
 					dataGrid.add(linechart, 0, 4);
 					
-					//TODO make database saving concurrent because this is not a ui frontend thing, this can just easily run in the background becasue the user won't have any immediate effect from it
-					if (databaseSelection == true) {
-						
-						DBuser db = new DBuser();
-						
-						//TODO change db and dbuser from earnings to just general info like amntNeeded
-						//DefaultE is just a placeholder because there is now way to name earnings or have multiple earnings, yet
-						db.insertEarnings(amntNeeded, saveYearly);
-						
-					} else {
-						
-						
-					}
+					dbThread r = new dbThread(amntNeeded, saveYearly, databaseSelection);
+			        Thread thread_object=new Thread(r);
+			        thread_object.start();
 					
 			        primaryStage.setScene(dataScene);
 			        dataAmntNeedT.setText("Amount Needed to FIRE: $" + amntNeeded);
@@ -228,6 +219,7 @@ public class Main extends Application {
 			
 			
 			Scene setupScene = new Scene(setupGrid, 720, 480);
+			
 			//TODO finish CSS
 			setupScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			dataScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -246,4 +238,32 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
+}
+
+class dbThread implements Runnable {
+	
+	double amntNeeded;
+	double saveYearly;
+	boolean databaseSelection;
+	
+    public dbThread(double amntNeeded, double saveYearly, boolean databaseSelection) {
+		this.amntNeeded = amntNeeded;
+		this.saveYearly = saveYearly;
+		this.databaseSelection = databaseSelection;
+		System.out.println("amnt " + this.amntNeeded);
+	}
+     public void run() {
+    	//TODO make database saving concurrent because this is not a ui frontend thing, this can just easily run in the background becasue the user won't have any immediate effect from it
+ 		if (databaseSelection == true) {
+ 			
+ 			DBuser db = new DBuser();	
+ 			db.insertEarnings(amntNeeded, saveYearly);
+ 			System.out.println("Saved");
+ 			
+ 		} else {	
+ 			System.out.println("Didn't save");
+ 			System.out.println(databaseSelection);
+ 			
+ 		}
+     }
 }
