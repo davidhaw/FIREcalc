@@ -231,8 +231,16 @@ public class Main extends Application {
 						x++;
 					}
 					
-					//Defining X axis  
-					NumberAxis xAxis = new NumberAxis(age, deathAge, 1); 
+					//Defining X axis - betterGraphAge makes the graph look better as the start points aren't all out of graph
+					int betterGraphStartAge;
+					if (age == 0) {
+						betterGraphStartAge = age;
+					} else {
+						betterGraphStartAge = age - 1;
+					}
+					betterGraphStartAge = age - 1;
+					int betterGraphDeathAge = deathAge + 1;
+					NumberAxis xAxis = new NumberAxis(betterGraphStartAge, betterGraphDeathAge, 1); 
 					xAxis.setLabel("Age"); 
 					        
 					//amntNeededTop just makes the graph a little bit higher than the mac cash so it is easier to read
