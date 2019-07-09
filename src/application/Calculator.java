@@ -20,22 +20,22 @@ public class Calculator {
 	}
 	
 	//TODO Implement the interest inflation method
-	public double amntNeededAdvanced(double saveYearly, int startAge, int deathAge, double interestInflation) {
-		double result = 0.00;
-		int yrsOfFire = deathAge - startAge;
-		int i = 0;
+	public double amntNeededAdvanced(double amntNeeded, int startAge, int age, double interestInflation) {
+		interestInflation = interestInflation / 100;
+		int yrsOfFire = startAge - age;
+		//i is one and not 0 because with 0 it would add in one more year of inflation where saving would already stop
+		int i = 1;
 		double saveYInterest;
 		
 		while (i<yrsOfFire)
 		{
-			saveYInterest = saveYearly * interestInflation;
-			saveYearly = saveYearly - saveYInterest;
+			saveYInterest = amntNeeded * interestInflation;
+			amntNeeded = amntNeeded - saveYInterest;
 			i++;
-			
 		}
 		
 		
-		return result;
+		return amntNeeded;
 	}
 	
 	@SuppressWarnings("rawtypes")
