@@ -28,8 +28,8 @@ public class DBuser {
         
    }
     
-    public void insertEarnings(double amntNeeded, double saveYearly) {
-        String sql = "INSERT INTO earning(amntNeeded, saveYearly) VALUES(?,?)";  
+    public void insertData(double amntNeeded, double saveYearly) {
+        String sql = "INSERT INTO dataF(amntNeeded, saveYearly) VALUES(?,?)";  
    
         try{ 
             Connection conn = this.connect();  

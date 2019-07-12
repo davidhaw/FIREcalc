@@ -17,7 +17,7 @@ class dbThreadSave implements Runnable {
  		if (databaseSelection == true) {
  			
  			DBuser db = new DBuser();	
- 			db.insertEarnings(amntNeeded, saveYearly);
+ 			db.insertData(amntNeeded, saveYearly);
  			System.out.println("Saved data into DB");
  			
  		} else {	

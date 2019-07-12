@@ -19,7 +19,24 @@ public class Calculator {
 		return result;
 	}
 	
-	//TODO add in advanced mode calculations that include inflation and interest
+	//TODO Implement the interest inflation method
+	public double amntNeededAdvanced(double amntNeeded, int startAge, int age, double interestInflation) {
+		interestInflation = interestInflation / 100;
+		int yrsOfFire = startAge - age;
+		//i is one and not 0 because with 0 it would add in one more year of inflation where saving would already stop
+		int i = 1;
+		double saveYInterest;
+		
+		while (i<yrsOfFire)
+		{
+			saveYInterest = amntNeeded * interestInflation;
+			amntNeeded = amntNeeded - saveYInterest;
+			i++;
+		}
+		
+		
+		return amntNeeded;
+	}
 	
 	@SuppressWarnings("rawtypes")
 	public ArrayList chartdata (int age, int startAge, double saveYearly, double usedYearly, int deathAge) {

@@ -61,7 +61,7 @@ public class Main extends Application {
 			TextField ageStartField = new TextField("40");
 			setupGrid.add(ageStartField, 1, 2);
 
-			Label preSave = new Label("How much have you already saved for FIRE?:");
+			Label preSave = new Label("How much have you already saved for FIRE:");
 			setupGrid.add(preSave, 0, 3);
 			TextField preSaveField = new TextField();
 			setupGrid.add(preSaveField, 1, 3);
@@ -78,6 +78,13 @@ public class Main extends Application {
 			setupGrid.add(deathAgeF, 1, 5);
 			deathAgeL.setVisible(false);
 			deathAgeF.setVisible(false);
+			
+			Label InterInfL = new Label ("Inflation - Interest Per Year");
+			setupGrid.add(InterInfL, 0, 6);
+			TextField InterInfF = new TextField("0");
+			setupGrid.add(InterInfF, 1, 6);
+			InterInfL.setVisible(false);
+			InterInfF.setVisible(false);
 			
 			Button infoBtn = new Button("Show me my data!"); 
 			final Text actiontarget = new Text();
@@ -131,11 +138,16 @@ public class Main extends Application {
 			            	
 			    			deathAgeL.setVisible(true);
 			    			deathAgeF.setVisible(true);
+			    			InterInfL.setVisible(true);
+			    			InterInfF.setVisible(true);
+			    			
 			            	
 			            } else {
 			            	
 			    			deathAgeL.setVisible(false);
 			    			deathAgeF.setVisible(false);
+			    			InterInfL.setVisible(false);
+			    			InterInfF.setVisible(false);
 			            	
 			            }
 			            
@@ -200,11 +212,20 @@ public class Main extends Application {
 				    int age = Integer.parseInt(ageField.getText());
 				    deathAge = Integer.parseInt(deathAgeF.getText());
 
-			        
+			        double interestInflation = Double.parseDouble(InterInfF.getText());
 			        double preSaved = Double.parseDouble(preSaveField.getText());
 			        
 			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
 			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
+			        double advancedCalc = 0;
+			        double advancedSaveYearly = 0;
+			        if (interestInflation != 0.00) {
+				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, Integer.parseInt(ageStartField.getText()), age, interestInflation);
+				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, Integer.parseInt(ageStartField.getText()));
+				        System.out.println(advancedCalc);
+			        } else {
+			        }
+			        
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
 			        
 					XYChart.Series FIREcash = new XYChart.Series(); 
@@ -219,8 +240,16 @@ public class Main extends Application {
 						x++;
 					}
 					
-					//Defining X axis  
-					NumberAxis xAxis = new NumberAxis(age, deathAge, 1); 
+					//Defining X axis - betterGraphAge makes the graph look better as the start points aren't all out of graph
+					int betterGraphStartAge;
+					if (age == 0) {
+						betterGraphStartAge = age;
+					} else {
+						betterGraphStartAge = age - 1;
+					}
+					betterGraphStartAge = age - 1;
+					int betterGraphDeathAge = deathAge + 1;
+					NumberAxis xAxis = new NumberAxis(betterGraphStartAge, betterGraphDeathAge, 1); 
 					xAxis.setLabel("Age"); 
 					        
 					//amntNeededTop just makes the graph a little bit higher than the mac cash so it is easier to read
@@ -234,15 +263,21 @@ public class Main extends Application {
 					linechart.getData().add(FIREcash);
 					dataGrid.add(linechart, 0, 4);
 					
-					dbThreadSave r = new dbThreadSave(amntNeeded, saveYearly, databaseSelection);
-			        Thread thread_object=new Thread(r);
-			        thread_object.start();
-					
+
+			        if (interestInflation != 0.00) {
+			        	dataAmntNeedT.setText("Amount Needed to FIRE: $" + advancedCalc);
+				        dataAmntNeedT.setText("Amount Needed to FIRE: $" + advancedSaveYearly);
+						dbThreadSave r = new dbThreadSave(advancedCalc, advancedSaveYearly, databaseSelection);
+				        Thread thread_object=new Thread(r);
+				        thread_object.start();
+			        } else {
+				        dataAmntNeedT.setText("Amount Needed to FIRE: $" + amntNeeded);
+				        saveYearlyT.setText("Amount needed to save yearly to FIRE: $" + saveYearly);
+						dbThreadSave nonAr = new dbThreadSave(amntNeeded, saveYearly, databaseSelection);
+				        Thread dbNonAdv=new Thread(nonAr);
+				        dbNonAdv.start();
+			        }
 			        primaryStage.setScene(dataScene);
-			        dataAmntNeedT.setText("Amount Needed to FIRE: $" + amntNeeded);
-			        saveYearlyT.setText("Amount needed to save yearly to FIRE: $" + saveYearly);
-			        
-			        
 			    }
 			});
 			

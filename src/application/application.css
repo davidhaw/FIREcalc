@@ -1,11 +1,30 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+/* Color Palette: Blue: #90caf9 | Gray: #e0e0e0 */
 .root {
-	-fx-background-color : #2ECC40;
+	-fx-background-color : e0e0e0;
 }
 .button {
-	-fx-background-color: aqua;
 	-fx-border-radius: 5;
     -fx-padding: 3 6 6 6;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+}
+
+.button:hover {
+	-fx-background-color: #90caf9;
+	-fx-border-color: grey;
+	-fx-border-radius: 5;
+    -fx-padding: 3 6 6 6;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+}
+
+.button:pressed {
+	-fx-background-color: #90caf9;
+	-fx-border-radius: 5;
+    -fx-padding: 3 6 6 6;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
 }
 
 .text {

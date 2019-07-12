@@ -111,7 +111,7 @@
 			<manifest>
 				<attribute name="Implementation-Vendor" value="https://github.com/davidhaw/FIREcalc"/>
 				<attribute name="Implementation-Title" value="FIRE Calculator"/>
-				<attribute name="Implementation-Version" value="1"/>
+				<attribute name="Implementation-Version" value="1.2"/>
 				<attribute name="JavaFX-Feature-Proxy" value="None"/>
 			</manifest>
 		</fx:jar>
@@ -125,7 +125,7 @@
 			includeDT="false"
 			offlineAllowed="true"
 			outdir="${basedir}/deploy"
-			outfile="FIREgui" nativeBundles="dmg"
+			outfile="FIREgui" nativeBundles="msi"
 			updatemode="background" >
 	
 			<fx:platform basedir="${java.home}"/>
