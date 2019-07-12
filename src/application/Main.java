@@ -16,7 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -204,14 +207,19 @@ public class Main extends Application {
 				@Override
 			    public void handle(ActionEvent e) {
 		        
+			    	try {
+			    	
 			        Calculator calc = new Calculator();
 			        
 			        int deathAge = 80;
-				    int age = Integer.parseInt(ageField.getText());
-				    deathAge = Integer.parseInt(deathAgeF.getText());
-
-			        double interestInflation = Double.parseDouble(InterInfF.getText());
-			        double preSaved = Double.parseDouble(preSaveField.getText());
+			        int age;
+			        double preSaved;
+			        double interestInflation;
+				    age = Integer.parseInt(ageField.getText());
+					deathAge = Integer.parseInt(deathAgeF.getText());
+				    interestInflation = Double.parseDouble(InterInfF.getText());
+				    preSaved = Double.parseDouble(preSaveField.getText());
+			        
 			        
 			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
 			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
@@ -273,6 +281,16 @@ public class Main extends Application {
 				        dbNonAdv.start();
 			        }
 			        primaryStage.setScene(dataScene);
+			    	} catch (NumberFormatException ee) {
+
+					    Alert alert = new Alert(AlertType.INFORMATION);
+					    alert.setTitle("Empty Fields");
+					    alert.setHeaderText(null);
+					    alert.setContentText("Please Enter All Fields Before Continuing!!");
+
+					    alert.showAndWait();
+					    
+			    	}
 			    }
 			});
 			
@@ -287,8 +305,10 @@ public class Main extends Application {
 			primaryStage.setTitle("FIRE Calc");
 			primaryStage.show();
 			
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(Exception ex ) {
+
+			System.out.println(ex.getMessage());
+			
 		}
 	}
 	
