@@ -18,8 +18,8 @@ public class Calculator {
 		double result = amntNeeded / ageToSave;
 		return result;
 	}
+
 	
-	//TODO Implement the interest inflation method
 	public double amntNeededAdvanced(double amntNeeded, int startAge, int age, double interestInflation) {
 		interestInflation = interestInflation / 100;
 		int yrsOfFire = startAge - age;

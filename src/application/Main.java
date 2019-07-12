@@ -203,9 +203,7 @@ public class Main extends Application {
 			    @SuppressWarnings("unchecked")
 				@Override
 			    public void handle(ActionEvent e) {
-			        //TODO This all needs to be concurrent later on
-			    	//TODO Add In all the CONCURRENT calculations and DB saving
-			        
+		        
 			        Calculator calc = new Calculator();
 			        
 			        int deathAge = 80;
@@ -223,7 +221,6 @@ public class Main extends Application {
 				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, Integer.parseInt(ageStartField.getText()), age, interestInflation);
 				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, Integer.parseInt(ageStartField.getText()));
 				        System.out.println(advancedCalc);
-			        } else {
 			        }
 			        
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
@@ -241,10 +238,8 @@ public class Main extends Application {
 					}
 					
 					//Defining X axis - betterGraphAge makes the graph look better as the start points aren't all out of graph
-					int betterGraphStartAge;
-					if (age == 0) {
-						betterGraphStartAge = age;
-					} else {
+					int betterGraphStartAge = age;
+					if (age != 0) {
 						betterGraphStartAge = age - 1;
 					}
 					betterGraphStartAge = age - 1;
@@ -283,7 +278,6 @@ public class Main extends Application {
 			
 			
 			
-			//TODO finish CSS
 			setupScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			dataScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
