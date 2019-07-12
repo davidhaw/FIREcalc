@@ -93,7 +93,7 @@
 		</fx:resources>
 	
 		<fx:application id="fxApplication"
-			name="FIRE Calculator"
+			name="FIRE Calc"
 			mainClass="application.Main"
 			toolkit="fx"
 		/>
@@ -110,8 +110,9 @@
 	
 			<manifest>
 				<attribute name="Implementation-Vendor" value="https://github.com/davidhaw/FIREcalc"/>
-				<attribute name="Implementation-Title" value="FIRE Calculator"/>
+				<attribute name="Implementation-Title" value="FIRE Calc"/>
 				<attribute name="Implementation-Version" value="1.2"/>
+				<attribute name="SplashScreen-Image" value="alphaLogo.svg"/>
 				<attribute name="JavaFX-Feature-Proxy" value="None"/>
 			</manifest>
 		</fx:jar>
@@ -125,7 +126,7 @@
 			includeDT="false"
 			offlineAllowed="true"
 			outdir="${basedir}/deploy"
-			outfile="FIREgui" nativeBundles="msi"
+			outfile="FIREgui" nativeBundles="dmg"
 			updatemode="background" >
 	
 			<fx:platform basedir="${java.home}"/>
