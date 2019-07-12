@@ -1,3 +1,5 @@
+![FIRE Calc Logo](https://raw.githubusercontent.com/davidhaw/FIREcalc/master/alphaLogo.svg)
+
 # FIREcalc
 Calculates what you need to FI/RE (Financial Independence, Retire Early). 
 
