@@ -38,7 +38,6 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		try {
 			//Setup Scene
-			//TODO make advanced mode and all the textfields and such
 			GridPane setupGrid = new GridPane();
 			setupGrid.setAlignment(Pos.CENTER);
 			setupGrid.setHgap(10);
@@ -47,7 +46,7 @@ public class Main extends Application {
 			Text scenetitle = new Text("Welcome. Please input your data to calculate FIRE data");
 			
 			//Advanced Mode
-			final CheckBox advancedMode = new CheckBox("Advanced Mode");
+			Button advancedMode = new Button("Advanced Mode");
 			setupGrid.add(advancedMode, 1, 10);
 			
 			scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -73,28 +72,41 @@ public class Main extends Application {
 			TextField yearSpendField = new TextField();
 			setupGrid.add(yearSpendField, 1, 4);
 			
+			GridPane advancedGrid = new GridPane();
+			advancedGrid.setAlignment(Pos.CENTER);
+			advancedGrid.setHgap(10);
+			advancedGrid.setVgap(10);
+			advancedGrid.setPadding(new Insets(25, 25, 25, 25));
+			Text advaTitle = new Text("Advanced Mode Input");
+			advaTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+			advancedGrid.add(advaTitle, 0, 0, 2, 1);
 			
 			Label deathAgeL = new Label ("Death Age");
-			setupGrid.add(deathAgeL, 0, 5);
+			advancedGrid.add(deathAgeL, 0, 3);
 			TextField deathAgeF = new TextField("80");
-			setupGrid.add(deathAgeF, 1, 5);
-			deathAgeL.setVisible(false);
-			deathAgeF.setVisible(false);
+			advancedGrid.add(deathAgeF, 1, 3);
 			
 			Label InterInfL = new Label ("Inflation - Interest Per Year");
-			setupGrid.add(InterInfL, 0, 6);
+			advancedGrid.add(InterInfL, 0, 4);
 			TextField InterInfF = new TextField("0");
-			setupGrid.add(InterInfF, 1, 6);
-			InterInfL.setVisible(false);
-			InterInfF.setVisible(false);
+			advancedGrid.add(InterInfF, 1, 4);
 			
 			Label matchL = new Label ("Amount Employer Adds Yearly");
-			setupGrid.add(matchL, 0, 7);
+			advancedGrid.add(matchL, 0, 5);
 			TextField matchF = new TextField("0");
-			setupGrid.add(matchF, 1, 7);
-			matchL.setVisible(false);
-			matchF.setVisible(false);
+			advancedGrid.add(matchF, 1, 5);
+
+			//TODO add all the calc to find SS payments
+			 /* 
+			Label ssStartL = new Label ("Age to Start Social Security");
+			advancedGrid.add(ssStartL, 0, 6);
+			TextField ssStartF = new TextField("0");
+			advancedGrid.add(ssStartF, 1, 6);
+			*/
+			Button advaBack = new Button("Back To Normal Input");
+			advancedGrid.add(advaBack, 0, 7);
 			
+			//More stuff in normal input scene
 			Button infoBtn = new Button("Show me my data!"); 
 			final Text actiontarget = new Text();
 	        setupGrid.add(actiontarget, 1, 8);
@@ -130,7 +142,7 @@ public class Main extends Application {
 			Button backStart = new Button("Go Back To Data Input");
 			dataGrid.add(backStart, 0, 3);
 			
-			
+			Scene advaScene = new Scene(advancedGrid, 720, 480);
 			Scene setupScene = new Scene(setupGrid, 720, 480);
 			Scene dataScene = new Scene(dataGrid, 720, 480);
 			
@@ -139,34 +151,17 @@ public class Main extends Application {
 			EventHandler<ActionEvent> advancedModeEvent = new EventHandler<ActionEvent>() {
 			    @Override
 			    public void handle(ActionEvent event) {
-			        if (event.getSource() instanceof CheckBox) {
-			            CheckBox advancedMode = (CheckBox) event.getSource();
-			            advancedSelection = advancedMode.isSelected();
-			            System.out.println(advancedSelection);
-			            if (advancedSelection == true) {
-			            	
-			    			deathAgeL.setVisible(true);
-			    			deathAgeF.setVisible(true);
-			    			InterInfL.setVisible(true);
-			    			InterInfF.setVisible(true);
-			    			matchL.setVisible(true);
-			    			matchF.setVisible(true);
-			    			
-			            	
-			            } else {
-			            	
-			    			deathAgeL.setVisible(false);
-			    			deathAgeF.setVisible(false);
-			    			InterInfL.setVisible(false);
-			    			InterInfF.setVisible(false);
-			    			matchL.setVisible(false);
-			    			matchF.setVisible(false);
-			            	
-			            }
-			            
-			        }
+			    	primaryStage.setScene(advaScene);
 			    }
 			};
+			
+			EventHandler<ActionEvent> backToNormal = new EventHandler<ActionEvent>() {
+			    @Override
+			    public void handle(ActionEvent event) {
+			    	primaryStage.setScene(setupScene);
+			    }
+			};
+			advaBack.setOnAction(backToNormal);
 			
 			//Save to Database action event
 			EventHandler<ActionEvent> saveEvent = new EventHandler<ActionEvent> () {
@@ -221,28 +216,46 @@ public class Main extends Application {
 			    	
 			        Calculator calc = new Calculator();
 			        
+			        //Strings are for removing commas that might be added when adding numbers
+			        String deathAgeS = deathAgeF.getText();
+			        deathAgeS.replaceAll("[^\\d]", "");
+			        
+			        String ageS = ageField.getText();
+			        ageS.replaceAll("[^\\d]", "");
+			        
+			        String preSavedS = preSaveField.getText();
+			        preSavedS.replaceAll("[^\\d]", "");
+			        
+			        String interestInflationS = InterInfF.getText();
+			        interestInflationS.replaceAll("[^\\d]", "");
+			        
 			        int deathAge = 80;
 			        int age;
 			        double preSaved;
 			        double interestInflation;
-				    age = Integer.parseInt(ageField.getText());
-					deathAge = Integer.parseInt(deathAgeF.getText());
-				    interestInflation = Double.parseDouble(InterInfF.getText());
-				    preSaved = Double.parseDouble(preSaveField.getText());
-			       
-				    double employerAmnt = Double.parseDouble(matchF.getText());
 			        
-			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
-			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()), employerAmnt);
+				    age = Integer.parseInt(ageS);
+					deathAge = Integer.parseInt(deathAgeS);
+					
+				    interestInflation = Double.parseDouble(interestInflationS);
+				    preSaved = Double.parseDouble(preSavedS);
+			       
+				    double employerAmnt = Double.parseDouble(matchF.getText().replaceAll("[^\\d]", ""));
+			        double yearSpend = Double.parseDouble(yearSpendField.getText().replaceAll("[^\\d]", ""));
+				    int ageStart = Integer.parseInt(ageStartField.getText().replaceAll("[^\\d]", ""));
+			        
+			        final double amntNeeded = calc.amntNeeded(preSaved, yearSpend, ageStart, deathAge);
+			        final double saveYearly = calc.saveYearly(amntNeeded, age, ageStart, employerAmnt);
 			        double advancedCalc = 0;
 			        double advancedSaveYearly = 0;
+			        
 			        if (interestInflation != 0.00) {
-				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, Integer.parseInt(ageStartField.getText()), age, interestInflation);
-				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, Integer.parseInt(ageStartField.getText()), employerAmnt);
+				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, ageStart, age, interestInflation);
+				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, ageStart, employerAmnt);
 				        System.out.println(advancedCalc);
 			        }
 			        
-			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
+			        ArrayList<Object> chartData = calc.chartdata(age, ageStart, saveYearly, yearSpend, deathAge);
 			        
 					XYChart.Series FIREcash = new XYChart.Series(); 
 					FIREcash.setName("Cash spending for FIRE"); 

@@ -5,6 +5,7 @@
 }
 .button {
 	-fx-border-radius: 5;
+	-fx-border-color: grey;
     -fx-padding: 3 6 6 6;
     -fx-border-radius: 10 10 10 10;
     -fx-background-radius: 10 10 10 10;
@@ -22,6 +23,7 @@
 .button:pressed {
 	-fx-background-color: #90caf9;
 	-fx-border-radius: 5;
+	-fx-border-color: grey;
     -fx-padding: 3 6 6 6;
     -fx-border-radius: 10 10 10 10;
     -fx-background-radius: 10 10 10 10;

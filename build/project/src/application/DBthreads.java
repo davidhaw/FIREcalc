@@ -13,7 +13,6 @@ class dbThreadSave implements Runnable {
 		this.databaseSelection = databaseSelection;
 	}
      public void run() {
-    	//TODO make database saving concurrent because this is not a ui frontend thing, this can just easily run in the background becasue the user won't have any immediate effect from it
  		if (databaseSelection == true) {
  			
  			DBuser db = new DBuser();	

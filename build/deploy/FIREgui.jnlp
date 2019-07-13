@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="FIREgui.jar" size="16971" download="eager" />
+    <jar href="FIREgui.jar" size="13548" download="eager" />
     <jar href="libs/sqlite-jdbc-3.27.2.1.jar" size="6012084" download="eager" />
   </resources>
   <jfx:javafx-desc  width="0" height="0" main-class="application.Main"  name="FIRE Calc" />

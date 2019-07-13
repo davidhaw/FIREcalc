@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -86,6 +88,13 @@ public class Main extends Application {
 			InterInfL.setVisible(false);
 			InterInfF.setVisible(false);
 			
+			Label matchL = new Label ("Amount Employer Adds Yearly");
+			setupGrid.add(matchL, 0, 7);
+			TextField matchF = new TextField("0");
+			setupGrid.add(matchF, 1, 7);
+			matchL.setVisible(false);
+			matchF.setVisible(false);
+			
 			Button infoBtn = new Button("Show me my data!"); 
 			final Text actiontarget = new Text();
 	        setupGrid.add(actiontarget, 1, 8);
@@ -140,6 +149,8 @@ public class Main extends Application {
 			    			deathAgeF.setVisible(true);
 			    			InterInfL.setVisible(true);
 			    			InterInfF.setVisible(true);
+			    			matchL.setVisible(true);
+			    			matchF.setVisible(true);
 			    			
 			            	
 			            } else {
@@ -148,6 +159,8 @@ public class Main extends Application {
 			    			deathAgeF.setVisible(false);
 			    			InterInfL.setVisible(false);
 			    			InterInfF.setVisible(false);
+			    			matchL.setVisible(false);
+			    			matchF.setVisible(false);
 			            	
 			            }
 			            
@@ -203,27 +216,30 @@ public class Main extends Application {
 			    @SuppressWarnings("unchecked")
 				@Override
 			    public void handle(ActionEvent e) {
-			        //TODO This all needs to be concurrent later on
-			    	//TODO Add In all the CONCURRENT calculations and DB saving
-			        
+		        
+			    	try {
+			    	
 			        Calculator calc = new Calculator();
 			        
 			        int deathAge = 80;
-				    int age = Integer.parseInt(ageField.getText());
-				    deathAge = Integer.parseInt(deathAgeF.getText());
-
-			        double interestInflation = Double.parseDouble(InterInfF.getText());
-			        double preSaved = Double.parseDouble(preSaveField.getText());
+			        int age;
+			        double preSaved;
+			        double interestInflation;
+				    age = Integer.parseInt(ageField.getText());
+					deathAge = Integer.parseInt(deathAgeF.getText());
+				    interestInflation = Double.parseDouble(InterInfF.getText());
+				    preSaved = Double.parseDouble(preSaveField.getText());
+			       
+				    double employerAmnt = Double.parseDouble(matchF.getText());
 			        
 			        final double amntNeeded = calc.amntNeeded(preSaved, Double.parseDouble(yearSpendField.getText()), Integer.parseInt(ageStartField.getText()), deathAge);
-			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()));
+			        final double saveYearly = calc.saveYearly(amntNeeded, age, Integer.parseInt(ageStartField.getText()), employerAmnt);
 			        double advancedCalc = 0;
 			        double advancedSaveYearly = 0;
 			        if (interestInflation != 0.00) {
 				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, Integer.parseInt(ageStartField.getText()), age, interestInflation);
-				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, Integer.parseInt(ageStartField.getText()));
+				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, Integer.parseInt(ageStartField.getText()), employerAmnt);
 				        System.out.println(advancedCalc);
-			        } else {
 			        }
 			        
 			        ArrayList<Object> chartData = calc.chartdata(age, Integer.parseInt(ageStartField.getText()), saveYearly, Double.parseDouble(yearSpendField.getText()), deathAge);
@@ -241,10 +257,8 @@ public class Main extends Application {
 					}
 					
 					//Defining X axis - betterGraphAge makes the graph look better as the start points aren't all out of graph
-					int betterGraphStartAge;
-					if (age == 0) {
-						betterGraphStartAge = age;
-					} else {
+					int betterGraphStartAge = age;
+					if (age != 0) {
 						betterGraphStartAge = age - 1;
 					}
 					betterGraphStartAge = age - 1;
@@ -278,12 +292,21 @@ public class Main extends Application {
 				        dbNonAdv.start();
 			        }
 			        primaryStage.setScene(dataScene);
+			    	} catch (NumberFormatException ee) {
+
+					    Alert alert = new Alert(AlertType.INFORMATION);
+					    alert.setTitle("Empty Fields");
+					    alert.setHeaderText(null);
+					    alert.setContentText("Please Enter All Fields Before Continuing!!");
+
+					    alert.showAndWait();
+					    
+			    	}
 			    }
 			});
 			
 			
 			
-			//TODO finish CSS
 			setupScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			dataScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
@@ -293,8 +316,10 @@ public class Main extends Application {
 			primaryStage.setTitle("FIRE Calc");
 			primaryStage.show();
 			
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(Exception ex ) {
+
+			System.out.println(ex.getMessage());
+			
 		}
 	}
 	

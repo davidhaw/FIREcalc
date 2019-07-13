@@ -111,8 +111,8 @@
 			<manifest>
 				<attribute name="Implementation-Vendor" value="https://github.com/davidhaw/FIREcalc"/>
 				<attribute name="Implementation-Title" value="FIRE Calc"/>
-				<attribute name="Implementation-Version" value="1.2"/>
-				<attribute name="SplashScreen-Image" value="alphaLogo.svg"/>
+				<attribute name="Implementation-Version" value="1.3"/>
+				<attribute name="SplashScreen-Image" value=""/>
 				<attribute name="JavaFX-Feature-Proxy" value="None"/>
 			</manifest>
 		</fx:jar>

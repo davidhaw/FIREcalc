@@ -13,13 +13,14 @@ public class Calculator {
 		return amntNeeded;
 	}
 	
-	public double saveYearly (double amntNeeded, int age, int startAge) {
+	public double saveYearly (double amntNeeded, int age, int startAge, double employerMatch) {
 		int ageToSave = startAge - age;
 		double result = amntNeeded / ageToSave;
+		result = result - employerMatch;
 		return result;
 	}
+
 	
-	//TODO Implement the interest inflation method
 	public double amntNeededAdvanced(double amntNeeded, int startAge, int age, double interestInflation) {
 		interestInflation = interestInflation / 100;
 		int yrsOfFire = startAge - age;

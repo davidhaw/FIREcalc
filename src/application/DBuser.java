@@ -50,7 +50,7 @@ public class DBuser {
     	//DB last info will have the last to things from dbAll info, which will be the amntNeeded and saveYearly from the last db save. This will prevent us having to delete old data which the user might want back
     	ArrayList<Object> dbLastInfo = new ArrayList<>();
     	
-    	String getSql = "SELECT amntNeeded, saveYearly FROM earning";
+    	String getSql = "SELECT amntNeeded, saveYearly FROM dataF";
     	int placement = 0;
     	
     	try (Connection conn = this.connect();
