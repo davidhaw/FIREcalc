@@ -219,16 +219,16 @@ public class Main extends Application {
 			        
 			        //Strings are for removing commas that might be added when adding numbers
 			        String deathAgeS = deathAgeF.getText();
-			        deathAgeS.replaceAll("[^\\d]", "");
+			        deathAgeS = deathAgeS.replaceAll("[^\\d]", "");
 			        
 			        String ageS = ageField.getText();
-			        ageS.replaceAll("[^\\d]", "");
+			        ageS = ageS.replaceAll("[^\\d]", "");
 			        
 			        String preSavedS = preSaveField.getText();
-			        preSavedS.replaceAll("[^\\d]", "");
+			        preSavedS = preSavedS.replaceAll("[^\\d]", "");
 			        
 			        String interestInflationS = InterInfF.getText();
-			        interestInflationS.replaceAll("[^\\d]", "");
+			        interestInflationS = interestInflationS.replaceAll("[^\\d]", "");
 			        
 			        int deathAge = 80;
 			        int age;
