@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -325,6 +326,9 @@ public class Main extends Application {
 
 			
 			//fx setup
+			primaryStage.getIcons().add(
+					   new Image(
+					      Main.class.getResourceAsStream( "icon.png" ))); 
 			primaryStage.setScene(setupScene);
 			primaryStage.setTitle("FIRE Calc");
 			primaryStage.show();
