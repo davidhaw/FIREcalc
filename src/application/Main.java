@@ -92,18 +92,34 @@ public class Main extends Application {
 			TextField InterInfF = new TextField("0");
 			advancedGrid.add(InterInfF, 1, 4);
 			
-			Label matchL = new Label ("Amount Employer Adds Yearly");
+	/*		Label matchL = new Label ("Employer Match %");
 			advancedGrid.add(matchL, 0, 5);
 			TextField matchF = new TextField("0");
 			advancedGrid.add(matchF, 1, 5);
 
+			Label matchCapL = new Label ("Employer Match Cap");
+			advancedGrid.add(matchCapL, 0, 6);
+			TextField matchCapF = new TextField("10000");
+			advancedGrid.add(matchCapF, 1, 6);
+	
+		*/
+			
 			//TODO add all the calc to find SS payments
-			 /* 
+			 
 			Label ssStartL = new Label ("Age to Start Social Security");
-			advancedGrid.add(ssStartL, 0, 6);
+			advancedGrid.add(ssStartL, 0, 5);
+			ssStartL.setVisible(false);
 			TextField ssStartF = new TextField("0");
-			advancedGrid.add(ssStartF, 1, 6);
-			*/
+			advancedGrid.add(ssStartF, 1, 5);
+			ssStartF.setVisible(false);
+
+			Label ssSAmntL = new Label ("Amount Social Security Adds Each Ear");
+			advancedGrid.add(ssSAmntL, 0, 6);
+			ssSAmntL.setVisible(false);
+			TextField ssAmntF = new TextField("0");
+			advancedGrid.add(ssAmntF, 1, 6);
+			ssAmntF.setVisible(false);
+
 			Button advaBack = new Button("Back To Normal Input");
 			advancedGrid.add(advaBack, 0, 7);
 			
@@ -241,18 +257,22 @@ public class Main extends Application {
 				    interestInflation = Double.parseDouble(interestInflationS);
 				    preSaved = Double.parseDouble(preSavedS);
 			       
-				    double employerAmnt = Double.parseDouble(matchF.getText().replaceAll("[^\\d]", ""));
-			        double yearSpend = Double.parseDouble(yearSpendField.getText().replaceAll("[^\\d]", ""));
+				    double employerAmnt = 0;
+				    //employerAmnt = Double.parseDouble(matchF.getText().replaceAll("[^\\d]", ""));
+				    double employerAmntCap = 0; 
+				    //employerAmntCap = Double.parseDouble(matchCapF.getText().replaceAll("[^\\d]", ""));
+
+				    double yearSpend = Double.parseDouble(yearSpendField.getText().replaceAll("[^\\d]", ""));
 				    int ageStart = Integer.parseInt(ageStartField.getText().replaceAll("[^\\d]", ""));
 			        
 			        final double amntNeeded = calc.amntNeeded(preSaved, yearSpend, ageStart, deathAge);
-			        final double saveYearly = calc.saveYearly(amntNeeded, age, ageStart, employerAmnt);
+			        final double saveYearly = calc.saveYearly(amntNeeded, age, ageStart, employerAmnt, employerAmntCap);
 			        double advancedCalc = 0;
 			        double advancedSaveYearly = 0;
 			        
-			        if (interestInflation != 0.00) {
-				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, ageStart, age, interestInflation);
-				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, ageStart, employerAmnt);
+			        if (interestInflation != 0) {
+				        advancedCalc = calc.amntNeededAdvanced(amntNeeded, ageStart, age, interestInflation, Double.parseDouble(ssStartF.getText().replaceAll("[^\\d]", "")), Double.parseDouble(ssAmntF.getText().replaceAll("[^\\d]", "")), deathAge);
+				        advancedSaveYearly = calc.saveYearly(advancedCalc, age, ageStart, employerAmnt, employerAmntCap);
 				        System.out.println(advancedCalc);
 			        }
 			        
@@ -292,7 +312,7 @@ public class Main extends Application {
 					dataGrid.add(linechart, 0, 4);
 					
 
-			        if (interestInflation != 0.00) {
+			        if (interestInflation != 0) {
 			        	dataAmntNeedT.setText("Amount Needed to FIRE: $" + advancedCalc);
 				        dataAmntNeedT.setText("Amount Needed to FIRE: $" + advancedSaveYearly);
 						dbThreadSave r = new dbThreadSave(advancedCalc, advancedSaveYearly, databaseSelection);

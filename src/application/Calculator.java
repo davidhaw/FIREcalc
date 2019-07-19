@@ -13,15 +13,35 @@ public class Calculator {
 		return amntNeeded;
 	}
 	
-	public double saveYearly (double amntNeeded, int age, int startAge, double employerMatch) {
+	public double saveYearly (double amntNeeded, int age, int startAge, double employerMatch, double employerMatchCap) {
 		int ageToSave = startAge - age;
 		double result = amntNeeded / ageToSave;
-		result = result - employerMatch;
+	/*	double employerAdd = employerMatch / 100;
+		employerAdd = result * employerAdd;
+		System.out.println(employerAdd);
+		if (employerAdd < employerMatchCap) {
+			//i is one and not 0 because with 0 it would add in one more year of inflation where saving would already stop
+			int i = 1;			
+			while (i<ageToSave)
+			{
+				result = result - employerAdd;
+				i++;
+			}
+		} else {
+			//i is one and not 0 because with 0 it would add in one more year of inflation where saving would already stop
+			int i = 1;			
+			while (i<ageToSave)
+			{
+				result = result - employerMatchCap;
+				i++;
+			}
+		}
+		*/
 		return result;
 	}
 
 	
-	public double amntNeededAdvanced(double amntNeeded, int startAge, int age, double interestInflation) {
+	public double amntNeededAdvanced(double amntNeeded, int startAge, int age, double interestInflation, double ssStart, double ssAmnt, int deathAge) {
 		interestInflation = interestInflation / 100;
 		int yrsOfFire = startAge - age;
 		//i is one and not 0 because with 0 it would add in one more year of inflation where saving would already stop
@@ -31,10 +51,14 @@ public class Calculator {
 		while (i<yrsOfFire)
 		{
 			saveYInterest = amntNeeded * interestInflation;
-			amntNeeded = amntNeeded - saveYInterest;
+			amntNeeded = amntNeeded + saveYInterest;
 			i++;
 		}
 		
+		
+		/* while (ssStart < deathAge) {
+			amntNeeded = amntNeeded - ssAmnt;
+		} */
 		
 		return amntNeeded;
 	}
